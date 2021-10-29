@@ -1,0 +1,17 @@
+* {margin: 0; padding: 0; box-sizing:border-box;} /*Reset css*/
+
+body
+{
+    text-align: center;
+}
+p
+{
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top : 10px;
+    font-size : 1.5rem;
+}
+canvas
+{
+    border : 3px solid grey;
+}
