@@ -11,6 +11,24 @@ p
     margin-top : 10px;
     font-size : 1.5rem;
 }
+#pc
+{
+    margin-left : calc((100% - 480px) / 2);
+    margin-right: calc((100% - 480px) / 2);;
+    width : 480px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+#points
+{
+    grid-column: 1 / 2;
+    text-align: left;
+}
+#highscore
+{
+    grid-column: 2 / 3;
+    text-align: right;
+}
 canvas
 {
     border : 3px solid grey;
