@@ -1,35 +1,38 @@
-* {margin: 0; padding: 0; box-sizing:border-box;} /*Reset css*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-body
-{
+body {
     text-align: center;
 }
-p
-{
+
+p {
     font-weight: bold;
     text-transform: uppercase;
-    margin-top : 10px;
-    font-size : 1.5rem;
+    margin-top: 10px;
+    font-size: 1.5rem;
 }
-#pc
-{
-    margin-left : calc((100% - 480px) / 2);
-    margin-right: calc((100% - 480px) / 2);;
-    width : 480px;
+
+#pc {
+    margin-left: calc((100% - 480px) / 2);
+    margin-right: calc((100% - 480px) / 2);
+    width: 480px;
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
-#points
-{
+
+#points {
     grid-column: 1 / 2;
     text-align: left;
 }
-#highscore
-{
+
+#highscore {
     grid-column: 2 / 3;
     text-align: right;
 }
-canvas
-{
-    border : 3px solid grey;
+
+canvas {
+    border: 3px solid grey;
 }

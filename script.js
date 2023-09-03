@@ -1,5 +1,4 @@
-function game()
-{
+function game() {
     const c = document.getElementById("canvas");
     const ctx = c.getContext("2d");
     const p = document.getElementById("points");
@@ -20,51 +19,36 @@ function game()
     const apple = [false, Math.floor((Math.random() * 10) + 1) * 30, Math.floor((Math.random() * 10) + 1) * 30]; //Const array can't be reassigned, but it's elements can be modified
 
     //Listen for keys
-    document.body.addEventListener("keydown", ()=>
-    {
+    document.body.addEventListener("keydown", event => {
         keys.push(event.keyCode);
     })
 
     //Each game frame
-    setInterval(()=>
-    {
+    setInterval(() => {
         ctx.clearRect(0, 0, mX, mY);
-        
+
         //Spawn apple
-        if(!apple[0])
-        {
+        if (!apple[0]) {
             console.log(`Player:${player}; Apple ${apple}`);
-            do
-            {
-                console.log("rerun");
-                apple[1] = Math.floor((Math.random() * 10) + 1) * 30;
-                apple[2] = Math.floor((Math.random() * 10) + 1) * 30;
-                for(let i = 0; i < player.length; i++)
-                {
-                    if(apple[1] == player[i][0] && apple[2] == player[i][1]){console.log("col");}
-                    else{console.log("it good");}
-                }
-            }while(!(()=>
-            {
-                for(let i = 0; i < player.length; i++)
-                {
-                    // console.log(`Player: ${player[i]}; Apple: ${apple}`);
-                    if(apple[1] == player[i][0] && apple[2] == player[i][1]){return false;}
-                }
-                return true;
-            }))
+            let newAppleX = Math.floor((Math.random() * 10) + 1) * 30;
+            let newAppleY = Math.floor((Math.random() * 10) + 1) * 30;
+            do {
+                newAppleX = Math.floor((Math.random() * 10) + 1) * 30;
+                newAppleY = Math.floor((Math.random() * 10) + 1) * 30;
+                console.log("REGENERATE");
+            } while(player.some((segment) => {return segment[0] == newAppleX && segment[1] == newAppleY}));
             apple[0] = true;
+            apple[1] = newAppleX;
+            apple[2] = newAppleY;
         }
         ctx.fillStyle = "rgb(255, 0, 0)";
         ctx.fillRect(apple[1], apple[2], m, m);
         ctx.fillStyle = "rgb(0, 0, 0)";
 
         //Check key input and set vector
-        for(let i = 0; i < keys.length; i++)
-        {
+        for (let i = 0; i < keys.length; i++) {
             let oldv = vector;
-            switch(keys[i])
-            {
+            switch (keys[i]) {
                 case 37:
                     vector = [-1, 0];
                     break;
@@ -82,27 +66,25 @@ function game()
                     break;
             }
             //If the head position after the keypress would be equal to the segment of a player (if the player tries to make 180deg turn)
-            if(player[1] && x + vector[0] * m == player[1][0] && y + vector[1] * m == player[1][1])
-            {
+            if (player[1] && x + vector[0] * m == player[1][0] && y + vector[1] * m == player[1][1]) {
                 console.log("AAA");
                 vector = oldv;
             }
         }
         keys.length = 0; //XDDD
-        
+
         //Apply vector
         x = x + vector[0] * m;
         y = y + vector[1] * m;
 
         //Don't let the player out of the map
-        if(x > mX - m){x = mX - m; gameOver();} //TODO: change 3*m, it's totally wrong lmao
-        if(x < 0){x = 0; gameOver();}
-        if(y > mY - m){y = mY - m; gameOver();}
-        if(y < 0){y = 0; gameOver();}
-        
+        if (x > mX - m) { x = mX - m; gameOver(); } //TODO: change 3*m, it's totally wrong lmao
+        if (x < 0) { x = 0; gameOver(); }
+        if (y > mY - m) { y = mY - m; gameOver(); }
+        if (y < 0) { y = 0; gameOver(); }
+
         //Rewrite the new player position (every segment now has the position of the segment ahead of it)
-        for(let i = player.length - 1; i >= 0; i--)
-        {
+        for (let i = player.length - 1; i >= 0; i--) {
             player[i] = player[i - 1];
         }
         player[0] = [x, y];
@@ -110,8 +92,7 @@ function game()
         // console.log("x: " + x + "y: " + y);
 
         //Consume an apple
-        if(x == apple[1] && y == apple[2])
-        {
+        if (x == apple[1] && y == apple[2]) {
             points++;
             p.innerHTML = points + " points";
             apple[0] = 0;
@@ -119,26 +100,24 @@ function game()
         }
 
         //Check player-player collision
-        for(let i = 1; i < player.length; i++)
-        {
-            if(player[i][0] == x && player[i][1] == y)
-            {
+        for (let i = 1; i < player.length; i++) {
+            if (player[i][0] == x && player[i][1] == y) {
                 gameOver();
             }
         }
 
         //Draw player
-        for(let i = 0; i < player.length; i++){
+        for (let i = 0; i < player.length; i++) {
             ctx.fillRect(player[i][0], player[i][1], 30, 30);
         }
-    }, 1000/t); //The framerate
+    }, 1000 / t); //The framerate
 
 
     function gameOver() {
         x = 0; y = 0;
-        points = 0; 
+        points = 0;
         player.length = 1;
-        p.innerHTML = points + " points"; 
+        p.innerHTML = points + " points";
         vector = [0, 0];
 
         apple[1] = Math.floor((Math.random() * 10) + 1) * 30;
