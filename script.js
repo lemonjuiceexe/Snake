@@ -12,15 +12,21 @@ function game() {
     let vector = [0, 0]; //Move vector
     const keys = []; //Keys pressed
     let player = [[0, 0]]; //Array of segments of the player
+    let playerColor = 0;
     let points = 0;
 
-
     //0 or 1 - spawned; x; y
-    const apple = [false, Math.floor((Math.random() * 10) + 1) * 30, Math.floor((Math.random() * 10) + 1) * 30]; //Const array can't be reassigned, but it's elements can be modified
-
-    //Listen for keys
+    const colors = [
+        "rgb(0, 0, 255)", // Blue
+        "rgb(255, 0, 0)", // Red
+        "rgb(0, 255, 0)", // Green
+        "rgb(255, 255, 0)" // Yellow
+    ];
+    const apple = [false, Math.floor((Math.random() * 10) + 1) * 30, Math.floor((Math.random() * 10) + 1) * 30, Math.floor((Math.random() * (colors.length)))];
+    
+    //Listen for keys and queue them to be processed in the game frame
     document.body.addEventListener("keydown", event => {
-        keys.push(event.keyCode);
+        keys.push(event.key);
     })
 
     //Each game frame
@@ -35,31 +41,37 @@ function game() {
             do {
                 newAppleX = Math.floor((Math.random() * 10) + 1) * 30;
                 newAppleY = Math.floor((Math.random() * 10) + 1) * 30;
-                console.log("REGENERATE");
             } while(player.some((segment) => {return segment[0] == newAppleX && segment[1] == newAppleY}));
             apple[0] = true;
             apple[1] = newAppleX;
             apple[2] = newAppleY;
+            apple[3] = Math.floor((Math.random() * (colors.length))) ;
         }
-        ctx.fillStyle = "rgb(255, 0, 0)";
+        ctx.fillStyle = colors[apple[3]];
         ctx.fillRect(apple[1], apple[2], m, m);
-        ctx.fillStyle = "rgb(0, 0, 0)";
+        ctx.fillStyle = colors[playerColor];
 
-        //Check key input and set vector
+        //Check for user input
         for (let i = 0; i < keys.length; i++) {
             let oldv = vector;
-            switch (keys[i]) {
-                case 37:
+            switch (keys[i].toLowerCase()) {
+                case "a":
                     vector = [-1, 0];
                     break;
-                case 38:
+                case "w":
                     vector = [0, -1];
                     break;
-                case 39:
+                case "d":
                     vector = [1, 0];
                     break;
-                case 40:
+                case "s":
                     vector = [0, 1];
+                    break;
+                case "arrowright":
+                    if(++playerColor > colors.length - 1) playerColor = 0;
+                    break;
+                case "arrowleft":
+                    if(--playerColor < 0) playerColor = colors.length - 1;
                     break;
                 default:
                     console.log("wrong key");
@@ -71,7 +83,7 @@ function game() {
                 vector = oldv;
             }
         }
-        keys.length = 0; //XDDD
+        keys.length = 0;
 
         //Apply vector
         x = x + vector[0] * m;
@@ -89,14 +101,14 @@ function game() {
         }
         player[0] = [x, y];
 
-        // console.log("x: " + x + "y: " + y);
-
         //Consume an apple
         if (x == apple[1] && y == apple[2]) {
-            points++;
-            p.innerHTML = points + " points";
+            // Only award points if the apple is the same color as the player
+            if (apple[3] == playerColor){
+                p.innerHTML = ++points + " points";
+                player.push([player[player.length - 1][0] - vector[0] * 30, player[player.length - 1][1] - vector[1] * 30]);
+            }
             apple[0] = 0;
-            player.push([player[player.length - 1][0] - vector[0] * 30, player[player.length - 1][1] - vector[1] * 30]);
         }
 
         //Check player-player collision
@@ -107,6 +119,7 @@ function game() {
         }
 
         //Draw player
+        ctx.fillStyle = colors[playerColor];
         for (let i = 0; i < player.length; i++) {
             ctx.fillRect(player[i][0], player[i][1], 30, 30);
         }
